@@ -9,11 +9,13 @@ export default async (req, res) => {
   if (req.method === 'POST') {
     const { games, timer } = req.body;
 
-    // Daten in die Datei schreiben
     try {
-      await fs.writeFile(filePath, JSON.stringify({ games, timer }));
+      // Daten in eine JSON-Datei schreiben
+      const data = JSON.stringify({ games, timer }, null, 2);  // Formatierung für bessere Lesbarkeit
+      await fs.writeFile(filePath, data);  // Datei schreiben
       res.status(200).json({ message: 'Data saved successfully' });
     } catch (error) {
+      console.error('Error saving data:', error);  // Log für Fehlerüberwachung
       res.status(500).json({ message: 'Error saving data', error });
     }
   } else {
