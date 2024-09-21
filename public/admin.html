@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Win Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 400px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px 0;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin - Win Challenge</h1>
+
+    <h2>Spiele hinzufügen</h2>
+    <input type="text" id="game-input" placeholder="Spielname eingeben..." />
+    <button onclick="addGame()">Hinzufügen</button>
+
+    <h2>Spieleliste</h2>
+    <ul id="game-list"></ul>
+
+    <h2>Timer steuern</h2>    
+    <button onclick="startTimer()">Starten</button>
+    <button onclick="pauseTimer()">Pausieren</button>
+    <input type="number" id="set-hours" placeholder="Stunden" />
+    <input type="number" id="set-minutes" placeholder="Minuten" />
+    <input type="number" id="set-seconds" placeholder="Sekunden" />
+    <button onclick="setTimer()">Timer setzen</button>
+
+    <script>
+        let timerPaused = true;
+        let timer = { hours: 0, minutes: 0, seconds: 0 };
+        let games = [];
+
+        // Spiel hinzufügen
+        function addGame() {
+            const gameInput = document.getElementById("game-input").value;
+            if (gameInput) {
+                games.push({ name: gameInput, completed: false });
+                document.getElementById("game-input").value = '';
+                updateGameList();
+                saveData();  // Spiel wird auf dem Server gespeichert
+            }
+        }
+
+        // Spiele anzeigen
+        function updateGameList() {
+            const gameList = document.getElementById("game-list");
+            gameList.innerHTML = "";
+            games.forEach((game, index) => {
+                const li = document.createElement("li");
+                li.textContent = game.name;
+                li.className = game.completed ? "completed" : "";
+                li.onclick = () => {
+                    games[index].completed = !games[index].completed;
+                    updateGameList();
+                    saveData();  // Statusänderung speichern
+                };
+                gameList.appendChild(li);
+            });
+        }
+
+        // Timer starten
+        function startTimer() {
+            if (timerPaused) {
+                timerPaused = false;
+                timerInterval = setInterval(() => {
+                    if (!timerPaused) {
+                        incrementTimer();
+                        saveTimer();  // Timerwert speichern
+                    }
+                }, 1000);
+            }
+        }
+
+        // Timer pausieren
+        function pauseTimer() {
+            timerPaused = true;
+        }
+
+        // Timerwert setzen
+        function setTimer() {
+            const hours = parseInt(document.getElementById("set-hours").value) || 0;
+            const minutes = parseInt(document.getElementById("set-minutes").value) || 0;
+            const seconds = parseInt(document.getElementById("set-seconds").value) || 0;
+            timer = { hours, minutes, seconds };
+            saveTimer();
+        }
+
+        // Timer hochzählen
+        function incrementTimer() {
+            timer.seconds++;
+            if (timer.seconds >= 60) {
+                timer.seconds = 0;
+                timer.minutes++;
+            }
+            if (timer.minutes >= 60) {
+                timer.minutes = 0;
+                timer.hours++;
+            }
+            // Update in der öffentlichen Seite sollte hier ebenfalls passieren
+        }
+
+        // Daten auf dem Server speichern
+        function saveData() {
+            fetch('/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ games, timer })
+            });
+        }
+
+        // Timer auf dem Server speichern
+        function saveTimer() {
+            fetch('/save-timer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(timer)
+            });
+        }
+
+        // Initialdaten laden (vom Server)
+        window.onload = () => {
+            fetch('/load')
+                .then(response => response.json())
+                .then(data => {
+                    games = data.games;
+                    timer = data.timer;
+                    updateGameList();
+                });
+        };
+    </script>
+</body>
+</html>
