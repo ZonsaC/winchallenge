@@ -136,7 +136,7 @@
 
         // Daten auf dem Server speichern
         function saveData() {
-            fetch('https://winchallenge.vercel.app/save', {
+            fetch('https://winchallenge.vercel.app/api/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ games, timer })
@@ -145,7 +145,7 @@
 
         // Timer auf dem Server speichern
         function saveTimer() {
-            fetch('https://winchallenge.vercel.app/save-timer', {
+            fetch('https://winchallenge.vercel.app/api/save-timer', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(timer)
@@ -154,7 +154,7 @@
 
         // Initialdaten laden (vom Server)
         window.onload = () => {
-            fetch('https://winchallenge.vercel.app/load')
+            fetch('https://winchallenge.vercel.app/api/load')
                 .then(response => response.json())
                 .then(data => {
                     games = data.games;

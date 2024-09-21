@@ -61,7 +61,7 @@
 
         // Daten regelmäßig vom Server holen
         setInterval(() => {
-            fetch('https://winchallenge.vercel.app/load')
+            fetch('https://winchallenge.vercel.app/api/load')
                 .then(response => response.json())
                 .then(data => {
                     games = data.games;
