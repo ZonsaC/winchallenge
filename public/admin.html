@@ -136,11 +136,19 @@
 
         // Daten auf dem Server speichern
         function saveData() {
-            fetch('https://winchallenge.vercel.app/api/save', {
+            fetch('https://winchallenge.vercel.app/api/save', {  // Stelle sicher, dass die URL korrekt ist
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ games, timer })
-            });
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Fehler beim Speichern der Daten');
+                }
+                return response.json();
+            })
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
         }
 
         // Timer auf dem Server speichern
