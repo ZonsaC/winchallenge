@@ -10,9 +10,20 @@
             src: url('font.otf') format("opentype");
         }
         body {
-            font-family: font;            
-            background-color: transparent; /* Für OBS */
-            color: rgb(74, 104, 168);
+            font-family: font;
+            background-color: rgba(0, 0, 0, 0.5); /* 50% schwarz-transparent */
+            color: white; /* Weißer Text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Volle Höhe */
+            margin: 0;
+        }
+        .container {
+            border: 2px solid white; /* Weißer Rahmen */
+            padding: 20px;
+            border-radius: 10px; /* Abgerundete Ecken */
+            background-color: rgba(0, 0, 0, 0.5); /* Transparenter Hintergrund für den Container */
         }
         #timer {
             font-size: 48px;
@@ -34,8 +45,10 @@
     </style>
 </head>
 <body>
-    <div id="timer">00:00:00</div>
-    <ul id="game-list"></ul>
+    <div class="container">
+        <div id="timer">00:00:00</div>
+        <ul id="game-list"></ul>
+    </div>
 
     <script>
         let games = [];
