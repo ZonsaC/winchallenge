@@ -1,26 +1,15 @@
-import { MongoClient } from 'mongodb';
-
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri);
-const dbName = 'winChallenge';
+import clientPromise from './mongodb';
 
 export default async (req, res) => {
-  try {
-    await client.connect();
-    const db = client.db(dbName);
-    const collection = db.collection('challengeData');
+  const client = await clientPromise;
+  const db = client.db('winChallenge');
 
-    // Lade die gespeicherten Daten aus MongoDB
-    const data = await collection.findOne({ _id: '1' });
+  // Daten aus der MongoDB lesen
+  const data = await db.collection('challengeData').findOne({ _id: 'winChallengeData' });
 
-    if (data) {
-      res.status(200).json({ games: data.games, timer: data.timer });
-    } else {
-      res.status(200).json({ games: [], timer: { hours: 0, minutes: 0, seconds: 0 } });
-    }
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  } finally {
-    await client.close();
-  }
+  // Fallback, falls noch keine Daten vorhanden sind
+  const games = data ? data.games : [];
+  const timer = data ? data.timer : { hours: 0, minutes: 0, seconds: 0 };
+
+  res.status(200).json({ games, timer });
 };
