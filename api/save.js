@@ -12,19 +12,18 @@ export default async (req, res) => {
 
   if (req.method === 'POST') {
     const client = await clientPromise;
-    const db = client.db('winChallenge');  // Name der Datenbank (wie in MongoDB Atlas angegeben)
+    const db = client.db('winChallenge');
 
-    const games = req.body.games;
-    const timer = req.body.timer;
+    const games = req.body.games; // Spiele aus dem Request
 
-    // Speichern oder Updaten der Daten
+    // Speichern oder Updaten der Spiele
     await db.collection('challengeData').updateOne(
       { _id: 'winChallengeData' },
-      { $set: { games, timer } },
+      { $set: { games } }, // Nur die Spiele speichern
       { upsert: true }
     );
 
-    res.status(200).json({ message: 'Data saved successfully' });
+    res.status(200).json({ message: 'Games saved successfully' });
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }
