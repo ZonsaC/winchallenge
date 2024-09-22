@@ -57,14 +57,13 @@
     <ul id="game-list"></ul>
 
     <h2>Timer steuern</h2>    
+    <div id="timer-display">00:00:00</div>
     <button onclick="startTimer()">Starten</button>
     <button onclick="pauseTimer()">Pausieren</button>
     <input type="number" id="set-hours" placeholder="Stunden" />
     <input type="number" id="set-minutes" placeholder="Minuten" />
     <input type="number" id="set-seconds" placeholder="Sekunden" />
     <button onclick="setTimer()">Timer setzen</button>
-    
-    <div id="timer-display">00:00:00</div>
 
     <script>
         let timerPaused = true;
