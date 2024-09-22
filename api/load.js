@@ -1,6 +1,7 @@
-import { promises as fs } from 'fs';
-const filePath = './data.json';  // Datei zum Laden der Daten
+let games = [];
+let timer = { hours: 0, minutes: 0, seconds: 0 };
 
+<<<<<<< HEAD
 export default async (req, res) => {
   try {
     // Überprüfen, ob die Datei existiert
@@ -21,4 +22,8 @@ export default async (req, res) => {
     console.error('Error loading data:', error);  // Log für Fehlerüberwachung
     res.status(500).json({ message: 'Error loading data', error });
   }
+=======
+export default (req, res) => {
+  res.status(200).json({ games, timer });
+>>>>>>> parent of a1b7689 (Changed to Filesaving)
 };
