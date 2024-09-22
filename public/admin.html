@@ -40,6 +40,10 @@
             text-decoration: line-through;
             color: #aaa;
         }
+        #timer-display {
+            font-size: 24px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -59,11 +63,14 @@
     <input type="number" id="set-minutes" placeholder="Minuten" />
     <input type="number" id="set-seconds" placeholder="Sekunden" />
     <button onclick="setTimer()">Timer setzen</button>
+    
+    <div id="timer-display">00:00:00</div>
 
     <script>
         let timerPaused = true;
         let timer = { hours: 0, minutes: 0, seconds: 0 };
         let games = [];
+        let timerInterval;
 
         // Spiel hinzufügen
         function addGame() {
@@ -72,7 +79,7 @@
                 games.push({ name: gameInput, completed: false });
                 document.getElementById("game-input").value = '';
                 updateGameList();
-                saveData();  // Spiel wird auf dem Server gespeichert
+                saveData();
             }
         }
 
@@ -87,7 +94,7 @@
                 li.onclick = () => {
                     games[index].completed = !games[index].completed;
                     updateGameList();
-                    saveData();  // Statusänderung speichern
+                    saveData();
                 };
                 gameList.appendChild(li);
             });
@@ -100,7 +107,8 @@
                 timerInterval = setInterval(() => {
                     if (!timerPaused) {
                         incrementTimer();
-                        saveTimer();  // Timerwert speichern
+                        updateTimerDisplay();
+                        saveTimer();
                     }
                 }, 1000);
             }
@@ -117,6 +125,7 @@
             const minutes = parseInt(document.getElementById("set-minutes").value) || 0;
             const seconds = parseInt(document.getElementById("set-seconds").value) || 0;
             timer = { hours, minutes, seconds };
+            updateTimerDisplay();
             saveTimer();
         }
 
@@ -131,12 +140,20 @@
                 timer.minutes = 0;
                 timer.hours++;
             }
-            // Update in der öffentlichen Seite sollte hier ebenfalls passieren
+        }
+
+        // Timer-Anzeige aktualisieren
+        function updateTimerDisplay() {
+            const timerDisplay = document.getElementById("timer-display");
+            timerDisplay.textContent = 
+                String(timer.hours).padStart(2, '0') + ':' +
+                String(timer.minutes).padStart(2, '0') + ':' +
+                String(timer.seconds).padStart(2, '0');
         }
 
         // Daten auf dem Server speichern
         function saveData() {
-            fetch('https://winchallenge.vercel.app/api/save', {  // Stelle sicher, dass die URL korrekt ist
+            fetch('https://winchallenge.vercel.app/api/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ games, timer })
@@ -168,6 +185,7 @@
                     games = data.games;
                     timer = data.timer;
                     updateGameList();
+                    updateTimerDisplay();
                 });
         };
     </script>
