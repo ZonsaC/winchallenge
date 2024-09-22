@@ -35,6 +35,9 @@
         }
         li {
             padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .completed {
             text-decoration: line-through;
@@ -43,6 +46,12 @@
         #timer-display {
             font-size: 24px;
             margin-top: 10px;
+        }
+        .remove-button {
+            background-color: #f44336;
+        }
+        .remove-button:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
@@ -57,13 +66,14 @@
     <ul id="game-list"></ul>
 
     <h2>Timer steuern</h2>    
-    <div id="timer-display">00:00:00</div>
     <button onclick="startTimer()">Starten</button>
     <button onclick="pauseTimer()">Pausieren</button>
     <input type="number" id="set-hours" placeholder="Stunden" />
     <input type="number" id="set-minutes" placeholder="Minuten" />
     <input type="number" id="set-seconds" placeholder="Sekunden" />
     <button onclick="setTimer()">Timer setzen</button>
+    
+    <div id="timer-display">00:00:00</div>
 
     <script>
         let timerPaused = true;
@@ -90,6 +100,15 @@
                 const li = document.createElement("li");
                 li.textContent = game.name;
                 li.className = game.completed ? "completed" : "";
+                
+                const removeButton = document.createElement("button");
+                removeButton.textContent = "Entfernen";
+                removeButton.className = "remove-button";
+                removeButton.onclick = () => {
+                    removeGame(index);
+                };
+
+                li.appendChild(removeButton);
                 li.onclick = () => {
                     games[index].completed = !games[index].completed;
                     updateGameList();
@@ -97,6 +116,13 @@
                 };
                 gameList.appendChild(li);
             });
+        }
+
+        // Spiel entfernen
+        function removeGame(index) {
+            games.splice(index, 1);
+            updateGameList();
+            saveData();
         }
 
         // Timer starten
