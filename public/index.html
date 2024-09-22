@@ -13,22 +13,20 @@
             font-family: font;
             background-color: rgba(0, 0, 0, 0.5); /* 50% schwarz-transparent */
             color: white; /* Weißer Text */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; /* Volle Höhe */
             margin: 0;
+            padding: 20px; /* Abstand vom Bildschirmrand */
         }
         .container {
-            border: 2px solid white; /* Weißer Rahmen */
-            padding: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.404); /* Weißer Rahmen */
             border-radius: 10px; /* Abgerundete Ecken */
             background-color: rgba(0, 0, 0, 0.5); /* Transparenter Hintergrund für den Container */
+            width: auto; /* Feste Breite der Box */
+            box-sizing: border-box; /* Bezieht Padding und Border in die Breite ein */
         }
         #timer {
-            font-size: 48px;
-            text-align: left;
-            margin-top: 20px;
+            font-size: 20px;
+            text-align: center; /* Timer links ausgerichtet */
+            margin-top: 0; /* Kein zusätzlicher Abstand oben */
         }
         ul {
             list-style-type: none;
