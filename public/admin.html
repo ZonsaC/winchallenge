@@ -129,6 +129,13 @@
         function startTimer() {
             if (timerPaused) {
                 timerPaused = false;
+
+                // Prüfe, ob bereits ein Intervall läuft, und stoppe es
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+
+                // Starte das Intervall
                 timerInterval = setInterval(() => {
                     if (!timerPaused) {
                         incrementTimer();
@@ -139,10 +146,15 @@
             }
         }
 
+
         // Timer pausieren
         function pauseTimer() {
             timerPaused = true;
+
+            // Stoppe das Intervall, um zu verhindern, dass es weiterläuft
+            clearInterval(timerInterval);
         }
+
 
         // Timerwert setzen
         function setTimer() {
